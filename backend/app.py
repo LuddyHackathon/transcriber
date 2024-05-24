@@ -6,27 +6,21 @@ import whisper
 
 app = flask.Flask(__name__)
 
-@app.route('/transcribe', methods=['POST'])
+@app.route('/', methods=['POST'])
 def transcribe():
     if request.method == 'POST':
-        language = request.form['language']
-        model = request.form['model_size']
+        args = request.args
+        voice_file = args.get('voice_file')
 
         # there are no english models for large
-        if model != 'large' and language == 'english':
-            model = model + '.en'
-        audio_model = whisper.load_model(model)
+        audio_model = whisper.load_model('small.en')
 
-        temp_dir = tempfile.mkdtemp()
-        save_path = os.path.join(temp_dir, 'temp.mp4')
+        save_path = os.path.join('/voice', voice_file)
 
-        wav_file = request.files['audio_data']
-        wav_file.save(save_path)
+        result = audio_model.transcribe(save_path, language='english')
 
-        if language == 'english':
-            result = audio_model.transcribe(save_path, language='english')
-        else:
-            result = audio_model.transcribe(save_path)
+        with open('/voice/voice.txt', 'w') as f:
+            f.write(result)
 
         return result['text']
     else:
