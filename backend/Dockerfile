@@ -8,7 +8,7 @@ COPY requirements.txt ./
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && apt install -y git && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir -r requirements.txt
 
