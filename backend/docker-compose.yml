@@ -8,6 +8,8 @@ services:
       - 65535:65535
     networks:
       - careerspeak
+    volumes:
+      - ../voice:/voice:ro
 
 networks:
   careerspeak:
