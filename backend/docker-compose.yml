@@ -1,0 +1,16 @@
+services:
+  transcriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transcriber
+    expose:
+      - 65535:65535
+    networks:
+      - careerspeak
+
+networks:
+  careerspeak:
+    external: true
+
+
