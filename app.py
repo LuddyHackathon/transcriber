@@ -1,8 +1,9 @@
-import sys
-
-import flask
-import whisper
 from flask import request
+import flask
+import os
+import subprocess
+os.environ['MPLBACKEND'] = 'Agg'
+
 
 app = flask.Flask(__name__)
 
@@ -12,14 +13,15 @@ def transcribe():
     args = request.args
     voice_file = args.get('voice_file')
 
-    audio_model = whisper.load_model('small.en')
-
-    result = audio_model.transcribe(f'/voice/{voice_file}',
-                                    language='english')
-    print(result, file=sys.stderr)
-
-    return result['text']
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=65535)
+    with open('batch.txt', 'w') as batch:
+        batch.write(voice_file+'\n')
+    subprocess.run([
+        "Faster-Whisper-XXL/faster-whisper-xxl",
+        "batch.txt",
+        "-m", "turbo",
+        "--task", "transcribe",
+        "--diarize", "reverb_v2",
+        "-br",
+        "-o", "Transcripts",
+        "-f", "txt", "srt"
+    ])
