@@ -1,5 +1,5 @@
-from flask import request
 import flask
+from flask import request
 import os
 import sys
 import subprocess
@@ -19,21 +19,23 @@ def transcribe():
         batch.write('/voice/'+voice_file+'\n')
     process = subprocess.run(
         [
-            "Faster-Whisper-XXL/faster-whisper-xxl",
-            "batch.txt",
-            "-m", "turbo",
-            "--task", "transcribe",
-            "--diarize", "reverb_v2",
-            "-br",
-            "-o", "/voice",
-            "-f", "txt", "srt"
+            'Faster-Whisper-XXL/faster-whisper-xxl',
+            'batch.txt',
+            '-m', 'turbo',
+            '--task', 'transcribe',
+            '--diarize', 'reverb_v2',
+            '-br',
+            '-o', '/voice',
+            '-f', 'txt',
+            '--device', 'cuda:1',
+            '--min-speakers', '2'
         ],
         capture_output=True)
     print(process.stdout, file=sys.stderr)
     with open(f'/voice/{voice_file.split(".")[0]}.txt') as transcribed:
         for line in transcribed.readline():
             transcribed_text += line
-    return {"transcribed_text": transcribed_text}
+    return {'transcribed_text': transcribed_text}
 
 
 if __name__ == '__main__':
