@@ -9,7 +9,7 @@ services:
     networks:
       - careerspeak
     volumes:
-      - ../voice:/voice:ro
+      - ../voice:/voice:rw
       - ../~:/home/python/transcriber/~
 
 networks:
